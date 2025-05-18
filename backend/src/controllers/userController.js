@@ -1,4 +1,5 @@
 import User from '../models/userModel.js'
+import generateToken from '../utils/generateToken.js'
 import bcrypt from 'bcryptjs'
 
 export const registerUser = async (req, res) => {
@@ -26,7 +27,8 @@ export const registerUser = async (req, res) => {
     res.status(201).json({
       _id: user._id,
       name: user.name,
-      email: user.email
+      email: user.email,
+      token: generateToken(user._id),  // <-- add token here
     })
   } catch (error) {
     console.error('Registration error:', error) // Debug log
@@ -54,7 +56,8 @@ export const loginUser = async (req, res) => {
     res.json({
       _id: user._id,
       name: user.name,
-      email: user.email
+      email: user.email,
+      token: generateToken(user._id),  // <-- add token here
     })
   } catch (error) {
     console.error('Login error:', error) // Debug log
