@@ -11,13 +11,14 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' })
     }
 
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
+    // const salt = await bcrypt.genSalt(10)
+    // const hashedPassword = await bcrypt.hash(password, salt)
 
     const user = await User.create({
       name,
       email,
-      password: hashedPassword
+      password
+      // password: hashedPassword
     })
 
     console.log('User created:', user) // Debug log
@@ -33,6 +34,7 @@ export const registerUser = async (req, res) => {
   }
 }
 
+// Login user
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body
@@ -43,7 +45,8 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' })
     }
 
-    const isMatch = await bcrypt.compare(password, user.password)
+    // Use the method from user model to compare password
+    const isMatch = await user.matchPassword(password)
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' })
     }
